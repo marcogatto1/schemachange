@@ -193,17 +193,17 @@ class SnowflakeSchemachangeSession:
     + " WHERE TABLE_SCHEMA = REPLACE('{schema_name}','\"','') AND TABLE_NAME = replace('{table_name}','\"','')"
   _q_ch_schema_present = "SELECT COUNT(1) FROM {database_name}.INFORMATION_SCHEMA.SCHEMATA" \
     + " WHERE SCHEMA_NAME = REPLACE('{schema_name}','\"','')"
-  _q_ch_ddl_schema = "CREATE SCHEMA {schema_name}"
-  _q_ch_ddl_table = "CREATE TABLE IF NOT EXISTS {database_name}.{schema_name}.{table_name} (VERSION VARCHAR, " \
+  _q_ch_ddl_schema = "CREATE SCHEMA \"{schema_name}\""
+  _q_ch_ddl_table = "CREATE TABLE IF NOT EXISTS {database_name}.\"{schema_name}\".{table_name} (VERSION VARCHAR, " \
     + "DESCRIPTION VARCHAR, SCRIPT VARCHAR, SCRIPT_TYPE VARCHAR, CHECKSUM VARCHAR," \
     + " EXECUTION_TIME NUMBER, STATUS VARCHAR, INSTALLED_BY VARCHAR, INSTALLED_ON TIMESTAMP_LTZ)"
   _q_ch_r_checksum = "SELECT DISTINCT SCRIPT, FIRST_VALUE(CHECKSUM) OVER (PARTITION BY SCRIPT " \
-    + "ORDER BY INSTALLED_ON DESC) FROM {database_name}.{schema_name}.{table_name} WHERE SCRIPT_TYPE = 'R' AND " \
+    + "ORDER BY INSTALLED_ON DESC) FROM {database_name}.\"{schema_name}\".{table_name} WHERE SCRIPT_TYPE = 'R' AND " \
     + "STATUS = 'Success'"
-  _q_ch_fetch ="SELECT VERSION FROM {database_name}.{schema_name}.{table_name} WHERE SCRIPT_TYPE = 'V' ORDER" \
+  _q_ch_fetch ="SELECT VERSION FROM {database_name}.\"{schema_name}\".{table_name} WHERE SCRIPT_TYPE = 'V' ORDER" \
     + " BY INSTALLED_ON DESC LIMIT 1"
   _q_sess_tag = "ALTER SESSION SET QUERY_TAG = '{query_tag}'"
-  _q_ch_log = "INSERT INTO {database_name}.{schema_name}.{table_name} (VERSION, DESCRIPTION, SCRIPT, SCRIPT_TYPE, " \
+  _q_ch_log = "INSERT INTO {database_name}.\"{schema_name}\".{table_name} (VERSION, DESCRIPTION, SCRIPT, SCRIPT_TYPE, " \
     + "CHECKSUM, EXECUTION_TIME, STATUS, INSTALLED_BY, INSTALLED_ON) values ('{script_version}'," \
     + "'{script_description}','{script_name}','{script_type}','{checksum}',{execution_time}," \
     + "'{status}','{user}',CURRENT_TIMESTAMP);"
