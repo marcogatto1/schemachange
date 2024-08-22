@@ -275,7 +275,7 @@ def deploy_command(config):
             except Exception as e:
                 error_message = str(e)
                 if "Cannot add or remove individual consumers for a share" in error_message:
-                    error_message = f"{error_message}. \nChecksum value to be updated -> {checksum_current}"
+                    error_message = f"{error_message}. \nHistory table -> {change_history_table['table_name']}\nChecksum value to be updated -> {checksum_current}"
                 raise Exception(f"{error_message}")
 
         scripts_applied += 1
