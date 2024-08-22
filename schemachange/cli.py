@@ -251,8 +251,7 @@ def deploy_command(config):
         if script_name[0] == 'R':
             # Compute the checksum for the script
             checksum_current = hashlib.sha224(content.encode('utf-8')).hexdigest()
-            print("New checksum value to be updated on history table -> ", checksum_current)
-            
+
             # check if R file was already executed
             if (r_scripts_checksum is not None) and script_name in list(r_scripts_checksum['script_name']):
                 checksum_last = \
@@ -269,8 +268,15 @@ def deploy_command(config):
 
         print("Applying change script %s" % script['script_name'])
         if not config['dry-run']:
-            apply_change_script(script, content, config['vars'], config['snowflake-database'], change_history_table,
-                                snowflake_session_parameters, config['autocommit'], config['verbose'])
+
+            try:
+                apply_change_script(script, content, config['vars'], config['snowflake-database'], change_history_table,
+                                    snowflake_session_parameters, config['autocommit'], config['verbose'])
+            except Exception as e:
+                error_message = str(e)
+                if "Cannot add or remove individual consumers for a share" in error_message:
+                    error_message = f"{error_message}. \nChecksum value to be updated -> {checksum_current}"
+                raise Exception(f"{error_message}")
 
         scripts_applied += 1
 
